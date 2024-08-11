@@ -22,9 +22,9 @@ Our crowdfunding project aims to raise funds for a noble cause. We believe in th
 ## Installation
 To run this project locally, follow these steps:
 1. Clone the repository: `git clone https://github.com/your-username/crowdfunding-project.git`
-2. Install the required dependencies: `npm install`
+2. Install the required dependencies: `npm install` in both web3 directory and then in client directory
 3. Configure the project settings: `cp config.example.js config.js` and update the necessary values
-4. Start the development server: `npm start`
+4. Start the development server: `npm run build` then `npm run dev`
 
 ## Usage
 Once the project is up and running, you can access it in your browser at `http://localhost:3000`. From there, you can explore the project, make donations, and track the progress.
