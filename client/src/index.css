@@ -1,3 +1,5 @@
+/* src/index.css */
+
 @import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap");
 
 @tailwind base;
@@ -15,4 +17,45 @@
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   filter: invert(0.8);
+}
+
+/* === Custom Dropdown Styling === */
+
+/* Customize the select dropdown background and text color */
+select {
+  background-color: #3a3a43; /* Dark background matching your form borders */
+  color: white; /* White text for readability */
+  appearance: none; /* Remove default dropdown arrow */
+  padding-right: 2rem; /* Space for custom arrow */
+  border-radius: 10px; /* Consistent with other form fields */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+/* Wrapper for the select to position the custom arrow */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Custom dropdown arrow */
+.select-wrapper::after {
+  content: '▼'; /* You can replace this with an SVG or a different character */
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: white; /* Arrow color matching the text */
+  font-size: 0.8rem;
+}
+
+/* Ensure options have consistent styling */
+select option {
+  background-color: #3a3a43; /* Dark background for options */
+  color: white; /* White text for readability */
+}
+
+/* Hide the default arrow in Internet Explorer */
+select::-ms-expand {
+  display: none;
 }

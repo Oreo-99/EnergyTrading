@@ -1,32 +1,38 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 
-import { DisplayCampaigns } from '../components';
-import { useStateContext } from '../context'
+import { DisplayCampaigns } from '../components'; // You might consider renaming this to DisplayListings if appropriate
+import { useStateContext } from '../context';
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [campaigns, setCampaigns] = useState([]);
+  const [listings, setListings] = useState([]); // Renamed from campaigns to listings
 
-  const { address, contract, getCampaigns } = useStateContext();
+  const { address, contract, getEnergyListings } = useStateContext(); // Updated context function
 
-  const fetchCampaigns = async () => {
+  const fetchListings = async () => {
     setIsLoading(true);
-    const data = await getCampaigns();
-    setCampaigns(data);
+    try {
+      const data = await getEnergyListings(); // Fetch all energy listings
+      setListings(data);
+    } catch (error) {
+      console.error("Error fetching energy listings:", error);
+    }
     setIsLoading(false);
-  }
+  };
 
   useEffect(() => {
-    if(contract) fetchCampaigns();
+    if (contract) {
+      fetchListings();
+    }
   }, [address, contract]);
 
   return (
     <DisplayCampaigns 
-      title="All Campaigns"
+      title="All Energy Listings" // Updated title
       isLoading={isLoading}
-      campaigns={campaigns}
+      campaigns={listings} // Passed listings instead of campaigns
     />
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

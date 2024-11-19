@@ -25,10 +25,10 @@ const Navbar = () => {
       <div className="sm:flex hidden flex-row justify-end gap-4">
         <CustomButton 
           btnType="button"
-          title={address ? 'Create a campaign' : 'Connect'}
+          title={address ? 'Create an energy listing' : 'Connect'}
           styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
           handleClick={() => {
-            if(address) navigate('create-campaign')
+            if(address) navigate('create-energy-listing')
             else connect()
           }}
         />
@@ -83,7 +83,7 @@ const Navbar = () => {
               title={address ? 'Create a campaign' : 'Connect'}
               styles={address ? 'bg-[#1dc071]' : 'bg-[#8c6dfd]'}
               handleClick={() => {
-                if(address) navigate('create-campaign')
+                if(address) navigate('create-energy-listing')
                 else connect();
               }}
             />

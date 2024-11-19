@@ -1,4 +1,4 @@
-import createCampaign from './create-campaign.svg';
+import CreateEnergyListing from './create-energy-listing.svg';
 import dashboard from './dashboard.svg';
 import logo from './logo.svg';
 import logout from './logout.svg';
@@ -15,7 +15,7 @@ import thirdweb from './thirdweb.png';
 
 export {
   tagType,
-  createCampaign,
+  CreateEnergyListing,
   dashboard,
   logo,
   logout,

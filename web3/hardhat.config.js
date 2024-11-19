@@ -13,8 +13,8 @@ module.exports = {
   },
   networks: {
     hardhat: {},
-    holesky:{
-    url:'https://rpc.holesky.ethpandaops.io/',
+    localhost:{
+    url:'https://holesky.etherscan.io',
     accounts:[`0x${process.env.PRIVATE_KEY}`]
   }
   },

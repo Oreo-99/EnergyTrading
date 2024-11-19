@@ -8,9 +8,9 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
   const navigate = useNavigate();
 
   const handleNavigate = (campaign) => {
-    navigate(`/campaign-details/${campaign.title}`, { state: campaign })
-  }
-  
+    navigate(`/campaign-details/${campaign.name}`, { state: campaign });
+  };
+
   return (
     <div>
       <h1 className="font-epilogue font-semibold text-[18px] text-white text-left">{title} ({campaigns.length})</h1>
@@ -22,18 +22,33 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
 
         {!isLoading && campaigns.length === 0 && (
           <p className="font-epilogue font-semibold text-[14px] leading-[30px] text-[#818183]">
-            You have not created any campigns yet
+            You have not created any campaigns yet
           </p>
         )}
 
-        {!isLoading && campaigns.length > 0 && campaigns.map((campaign) => <FundCard 
-          key={uuidv4()}
-          {...campaign}
-          handleClick={() => handleNavigate(campaign)}
-        />)}
+        {!isLoading && campaigns.length > 0 && campaigns.map((campaign) => (
+          <div key={uuidv4()} className="campaign-card-container">
+            <FundCard 
+              {...campaign} 
+              handleClick={() => handleNavigate(campaign)} 
+            />
+            {/* Display Purchase Timestamps */}
+            <div className="purchase-timestamps mt-2 text-gray-400 text-sm">
+              {campaign.purchaseTimestamps && campaign.purchaseTimestamps.length > 0 ? (
+                <ul>
+                  {campaign.purchaseTimestamps.map((timestamp, index) => (
+                    <li key={uuidv4()}>{`Purchase ${index + 1}: ${new Date(timestamp).toLocaleString()}`}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No purchases yet.</p>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DisplayCampaigns
+export default DisplayCampaigns;

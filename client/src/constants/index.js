@@ -1,37 +1,39 @@
-import { createCampaign, dashboard, logout, payment, profile, withdraw } from '../assets';
+// src/constants/navlinks.js
+
+import { CreateEnergyListing, dashboard, logout, payment, profile, withdraw } from '../assets';
 
 export const navlinks = [
   {
-    name: 'dashboard',
+    name: 'Dashboard',
     imgUrl: dashboard,
-    link: '/',
+    link: '/', // Assuming '/' is your dashboard/home page
   },
   {
-    name: 'campaign',
-    imgUrl: createCampaign,
-    link: '/create-campaign',
+    name: 'Create Energy Listing',
+    imgUrl: CreateEnergyListing,
+    link: '/create-energy-listing',
   },
   {
-    name: 'payment',
+    name: 'Payment',
     imgUrl: payment,
-    link: '/',
-    disabled: true,
+    link: '/payment', // Update the link if you plan to implement this feature
+    
   },
   {
-    name: 'withdraw',
+    name: 'Withdraw',
     imgUrl: withdraw,
-    link: '/',
-    disabled: true,
+    link: '/', // Update the link if you plan to implement this feature
+    disabled: true, // Keep disabled if not yet implemented
   },
   {
-    name: 'profile',
+    name: 'Profile',
     imgUrl: profile,
     link: '/profile',
   },
   {
-    name: 'logout',
+    name: 'Logout',
     imgUrl: logout,
-    link: '/',
-    disabled: true,
+    link: '/', // Update the link if you have a logout route
+    disabled: true, // Typically, logout is an action, not a route. Consider handling it differently
   },
 ];
