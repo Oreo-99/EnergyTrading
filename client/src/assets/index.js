@@ -18,6 +18,7 @@ import water_energy from './water_energy.svg';
 import windmill from './windmill.svg';
 import biomass_energy from './biomass_energy.svg';
 import fossil_fuel from './fossil_fuel.svg';
+import bar_chart from './bar_chart.svg';
 
 
 export {
@@ -40,5 +41,6 @@ export {
   water_energy,
   windmill,
   biomass_energy,
-  fossil_fuel
+  fossil_fuel,
+  bar_chart
 };

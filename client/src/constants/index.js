@@ -1,6 +1,6 @@
 // src/constants/navlinks.js
 
-import { CreateEnergyListing, dashboard, logout, payment, profile, withdraw } from '../assets';
+import { CreateEnergyListing, dashboard, logout, payment, profile, withdraw,bar_chart } from '../assets';
 
 export const navlinks = [
   {
@@ -29,6 +29,11 @@ export const navlinks = [
     name: 'Profile',
     imgUrl: profile,
     link: '/profile',
+  },
+  {
+    name: 'Graphing',
+    imgUrl: bar_chart,
+    link: '/graphing',
   },
 /*   {
     name: 'Logout',
