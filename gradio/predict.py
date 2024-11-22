@@ -1,16 +1,13 @@
+import gradio as gr
 import requests
 import numpy as np
 import torch
 import torch.nn as nn
 import joblib
-from flask import Flask, request, jsonify
 import collections
-
-app = Flask(__name__)
+import os
 
 # LSTM Model Definition
-
-
 class LSTMModel(nn.Module):
     def __init__(self, input_size=30, hidden_size=200, num_layers=1, output_size=1, bidirectional=True):
         super(LSTMModel, self).__init__()
@@ -44,7 +41,7 @@ class LSTMModel(nn.Module):
 def fetch_weather_data_for_cities(cities):
     all_weather_data = {}
     for city in cities:
-        url = f'http://api.weatherstack.com/current?access_key=9f55c7dda8147ace8ce359222e1fb0b3&query={city},India'
+        url = f'http://api.weatherstack.com/current?access_key=867b25bcddf1bfeb5c6f8c26996a37cf&query={city},India'
         try:
             response = requests.get(url)
             if response.status_code != 200:
@@ -83,7 +80,7 @@ def construct_input_features(weather_data, energy_type):
         'generation_other_renewable': 0.0,
         'generation_solar': 6378.0 if energy_type == "solar" else 0.0,
         'generation_waste': 0.0,
-        'generation_wind_onshore': 0.0 if energy_type != "wind" else 6378.0,
+        'generation_wind_onshore': 0.0 if energy_type != "wind" else 378.0,
         'temp': weather_data["temp"],
         'temp_min': 278,
         'temp_max': 300,
@@ -164,23 +161,20 @@ def predict_energy_demand(model, scaler, input_vector):
 # Flask Routes
 
 
-
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.json
-    city = data.get('city')
-    
+def predict(city):
     if not city:
-        return jsonify({'error': 'City and energy type are required'}), 400
+        return {'error': 'City name is required'}
+
     cities = [city]
     city_data = fetch_weather_data_for_cities(cities)
-    
+
+    if city not in city_data:
+        return {'error': f'Could not fetch weather data for city {city}'}
 
     weather_data = city_data[city]
-    predictions={}
+    predictions = {}
     energy_types = ['solar', 'wind', 'coal', 'hydro']
-    
+
     for energy_type in energy_types:
         input_vector = construct_input_features(weather_data, energy_type)
         prediction = predict_energy_demand(model, scaler, input_vector)
@@ -188,13 +182,23 @@ def predict():
             predictions[energy_type] = prediction
         else:
             predictions[energy_type] = 'Prediction failed'
-    
-    return jsonify({'city': city, 'predictions': predictions})
 
+    return {'city': city, 'predictions': predictions}
 
+# Initialize Model and Scaler
+BASE_DIR = os.path.dirname(__file__)
+model_path = os.path.join(BASE_DIR, "bilstm_model.pth")
+scaler_path = os.path.join(BASE_DIR, "scaler_new.pkl")
+model, scaler = initialize_model(model_path, scaler_path)
+
+# Gradio Interface
+interface = gr.Interface(
+    fn=predict,
+    inputs=gr.Textbox(label="City Name"),
+    outputs=gr.JSON(label="Predicted Energy Output"),
+    title="Energy Demand Prediction",
+    description="Enter the name of a city to get energy demand predictions for solar, wind, coal, and hydro."
+)
 
 if __name__ == "__main__":
-    model_path = 'C:\\Users\\Admin\\cf2\\EnergyTrading\\backend\\models\\bilstm_model.pth'
-    scaler_path = 'C:\\Users\\Admin\\cf2\\EnergyTrading\\backend\\models\\scaler_new.pkl'
-    model, scaler = initialize_model(model_path, scaler_path)
-    app.run(debug=True)
+    interface.launch(share=True)

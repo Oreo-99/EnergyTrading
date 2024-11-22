@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, MapPin, Building2, Calendar, Info, Download } from 'lucide-react';
+import { cityData } from '../constants';
 import axios from 'axios';
+
 
 const Graphing = () => {
   const [selectedFuel, setSelectedFuel] = useState('all');
@@ -13,112 +15,45 @@ const Graphing = () => {
     'pune': 'Pune',
     'mumbai': 'Mumbai',
     'delhi': 'Delhi',
-    'new-york': 'new-york',
+    'new-york': 'New York',
   };
 
-  const fetchPredictions = async (cityName) => {
+ /*  const fetchPredictions = async (cityName) => {
     try {
-      const response = await axios.post('http://127.0.0.1:5000/predict', {
-        cityName,
+      const response = await axios.post('http://localhost:8888/.netlify/v1/functions/predict', {
+        city: cityName,  // Ensure the key here matches the backend's expected key
       });
+  
+      // Assuming the response data has a `predictions` object
       const predictedValue = response.data.predictions;
+      
+      // Do something with the predictions (e.g., log them or set in state)
+      console.log(predictedValue);
+      
+      // Optionally, you could return the predictions to use them elsewhere in your app
+      return predictedValue;
+  
     } catch (error) {
       console.error('Error fetching prediction:', error);
     }
   };
+  
 
   //for each city, store the call the fetchPredictions function and store like {city name:predictions}, just use for loop on the cities array
 
   const citiesPredictions={}
   for (const city in cities){
     citiesPredictions[city]=fetchPredictions(city);
-  }
+  } */
 
   // Replace this with your actual cityData - this is just sample data
-  const cityData = {
-    'pune': {
-      coal: [
-        { week: -5, production: 150 },
-        { week: -4, production: 165 },
-        { week: -3, production: 145 },
-        { week: -2, production: 170 },
-        { week: -1, production: 155 },
-        { week: 0, production: 160 },
-        { week: 1, production: 0 }
-      ],
-      solar: [
-        { week: -5, production: 200 },
-        { week: -4, production: 210 },
-        { week: -3, production: 205 },
-        { week: -2, production: 215 },
-        { week: -1, production: 225 },
-        { week: 0, production: 220 },
-        { week: 1, production: 0 }
-      ],
-      wind: [
-        { week: -5, production: 180 },
-        { week: -4, production: 175 },
-        { week: -3, production: 185 },
-        { week: -2, production: 190 },
-        { week: -1, production: 182 },
-        { week: 0, production: 188 },
-        { week: 1, production: 0 }
-      ],
-      hydro: [
-        { week: -5, production: 120 },
-        { week: -4, production: 125 },
-        { week: -3, production: 118 },
-        { week: -2, production: 130 },
-        { week: -1, production: 128 },
-        { week: 0, production: 132 },
-        { week: 1, production: 0 }
-      ]
-    },
-    'mumbai': {
-      coal: [
-        { week: -5, production: 130 },
-        { week: -4, production: 145 },
-        { week: -3, production: 135 },
-        { week: -2, production: 150 },
-        { week: -1, production: 145 },
-        { week: 0, production: 150 },
-        { week: 1, production: 0 }
-      ],
-      solar: [
-        { week: -5, production: 180 },
-        { week: -4, production: 190 },
-        { week: -3, production: 185 },
-        { week: -2, production: 195 },
-        { week: -1, production: 205 },
-        { week: 0, production: 200 },
-        { week: 1, production: 0 }
-      ],
-      wind: [
-        { week: -5, production: 160 },
-        { week: -4, production: 155 },
-        { week: -3, production: 165 },
-        { week: -2, production: 170 },
-        { week: -1, production: 162 },
-        { week: 0, production: 168 },
-        { week: 1, production: 0 }
-      ],
-      hydro: [
-        { week: -5, production: 100 },
-        { week: -4, production: 105 },
-        { week: -3, production: 98 },
-        { week: -2, production: 110 },
-        { week: -1, production: 108 },
-        { week: 0, production: 112 },
-        { week: 1, production: 0 }
-      ]
-    }
-  };
+  
 
-  for (const city in cityData){
+  /* for (const city in cityData){
     for (const fuel in cityData[city]){
         cityData[city][fuel][6]['production']=citiesPredictions[city][fuel]*100;
     }
-  }
+  } */
 
 
 

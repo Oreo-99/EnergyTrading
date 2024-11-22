@@ -3,34 +3,45 @@ import numpy as np
 import torch
 import torch.nn as nn
 import joblib
-import json
+from flask import Flask, request, jsonify
 import collections
+import os
+
+app = Flask(__name__)
 
 # LSTM Model Definition
+
+
 class LSTMModel(nn.Module):
     def __init__(self, input_size=30, hidden_size=200, num_layers=1, output_size=1, bidirectional=True):
         super(LSTMModel, self).__init__()
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.bidirectional = bidirectional
+
+        # LSTM Layer
         self.lstm = nn.LSTM(input_size=input_size,
                             hidden_size=hidden_size,
                             num_layers=num_layers,
                             batch_first=True,
                             bidirectional=bidirectional)
+
+        # Fully connected layer
         fc_input_size = hidden_size * 2 if bidirectional else hidden_size
         self.fc = nn.Linear(fc_input_size, output_size)
 
     def forward(self, x):
         h0 = torch.zeros(self.num_layers * (2 if self.bidirectional else 1),
-                         x.size(0), self.hidden_size)
+                         x.size(0), self.hidden_size).to(x.device)
         c0 = torch.zeros(self.num_layers * (2 if self.bidirectional else 1),
-                         x.size(0), self.hidden_size)
+                         x.size(0), self.hidden_size).to(x.device)
         out, _ = self.lstm(x, (h0, c0))
         out = self.fc(out[:, -1, :])
         return out
 
 # Helper Functions
+
+
 def fetch_weather_data_for_cities(cities):
     all_weather_data = {}
     for city in cities:
@@ -56,6 +67,7 @@ def fetch_weather_data_for_cities(cities):
         except Exception as e:
             print(f"Error fetching weather data for {city}: {e}")
     return all_weather_data
+
 
 def construct_input_features(weather_data, energy_type):
     features = {
@@ -100,8 +112,9 @@ def construct_input_features(weather_data, energy_type):
     input_vector = [features.get(col, 0.0) for col in columns]
     return input_vector
 
+
 def convert_ordered_dict_to_model(state_dict):
-    model = LSTMModel(input_size=30, hidden_size=200, num_layers=1, output_size=1)
+    model = LSTMModel(input_size=30, hidden_size=200,num_layers=1, output_size=1)
 
     try:
         model.load_state_dict(state_dict)
@@ -112,15 +125,19 @@ def convert_ordered_dict_to_model(state_dict):
         print(f"Error converting model: {e}")
         return None
 
-# New initialize_model function
+
 def initialize_model(model_path, scaler_path):
     try:
         checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
         if isinstance(checkpoint, collections.OrderedDict):
+            # If it's directly an OrderedDict of state_dict
             model = convert_ordered_dict_to_model(checkpoint)
         elif 'model_state_dict' in checkpoint:
-            model = convert_ordered_dict_to_model(checkpoint['model_state_dict'])
+            # If it's a dictionary with 'model_state_dict' key
+            model = convert_ordered_dict_to_model(
+                checkpoint['model_state_dict'])
         else:
+            # Try converting whatever the checkpoint is
             model = convert_ordered_dict_to_model(checkpoint)
     except Exception as e:
         print(f"Error loading model: {e}")
@@ -131,6 +148,7 @@ def initialize_model(model_path, scaler_path):
         print(f"Error loading scaler: {e}")
         scaler = None
     return model, scaler
+
 
 def predict_energy_demand(model, scaler, input_vector):
     try:
@@ -144,45 +162,41 @@ def predict_energy_demand(model, scaler, input_vector):
         print(f"Prediction error: {e}")
         return None
 
-# The handler for the Netlify function
-def handler(event, context):
-    try:
-        # Get the request data
-        data = json.loads(event['body'])
-        city = data.get('city')
-        
-        if not city:
-            return {
-                'statusCode': 400,
-                'body': json.dumps({'error': 'City and energy type are required'})
-            }
-        
-        cities = [city]
-        city_data = fetch_weather_data_for_cities(cities)
-        weather_data = city_data[city]
-        predictions = {}
-        energy_types = ['solar', 'wind', 'coal', 'hydro']
-        
-        # Load model and scaler
-        model_path = './models/bilstm_model.pth'
-        scaler_path = './models/scaler_new.pkl'
-        model, scaler = initialize_model(model_path, scaler_path)
-        
-        for energy_type in energy_types:
-            input_vector = construct_input_features(weather_data, energy_type)
-            prediction = predict_energy_demand(model, scaler, input_vector)
-            if prediction is not None:
-                predictions[energy_type] = prediction
-            else:
-                predictions[energy_type] = 'Prediction failed'
-        
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'city': city, 'predictions': predictions})
-        }
+# Flask Routes
 
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'error': str(e)})
-        }
+
+
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    city = data.get('city')
+    
+    if not city:
+        return jsonify({'error': 'City and energy type are required'}), 400
+    cities = [city]
+    city_data = fetch_weather_data_for_cities(cities)
+    
+
+    weather_data = city_data[city]
+    predictions={}
+    energy_types = ['solar', 'wind', 'coal', 'hydro']
+    
+    for energy_type in energy_types:
+        input_vector = construct_input_features(weather_data, energy_type)
+        prediction = predict_energy_demand(model, scaler, input_vector)
+        if prediction is not None:
+            predictions[energy_type] = prediction
+        else:
+            predictions[energy_type] = 'Prediction failed'
+    
+    return jsonify({'city': city, 'predictions': predictions})
+
+
+
+if __name__ == "__main__":
+    BASE_DIR = os.path.dirname(__file__)
+    model_path = os.path.join(BASE_DIR, "bilstm_model.pth")
+    scaler_path = os.path.join(BASE_DIR, "scaler_new.pkl")
+    model, scaler = initialize_model(model_path, scaler_path)
+    app.run(debug=True)
