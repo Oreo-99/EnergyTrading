@@ -6,7 +6,7 @@ import EnergyTradingData from 'C:/Users/Admin/cf2/EnergyTrading/TruffleWeb3/buil
 const EnergyTradingABI = EnergyTradingData.abi;
 const ContractAdd= EnergyTradingData.networks[5777].address;
 // Create a Context for the application state
-const StateContext = createContext();
+const StateContext = createContext(); 
 
 /**
  * @dev Provider component that wraps the application and provides state and functions
@@ -86,6 +86,17 @@ export const StateContextProvider = ({ children }) => {
   };
 
   /**
+ * @dev Function to disconnect the wallet
+ */
+const disconnectWallet = () => {
+  setProvider(null);
+  setSigner(null);
+  setContract(null);
+  setAddress('');
+  console.log("Wallet disconnected");
+};
+
+  /**
    * @dev Function to create a new energy listing
    * @param {Object} form - Contains listing details
    */
@@ -133,7 +144,7 @@ export const StateContextProvider = ({ children }) => {
       
       var totalCost = listing.costPerUnit.mul(amount); // costPerUnit is already in Wei
       //divide the total cost by 10^18 to get the cost in ether
-      totalCost=totalCost.div(ethers.BigNumber.from(string(10).pow(18)))
+      totalCost=totalCost.div(ethers.BigNumber.from("1000000000000000000"))
 
       //console.log(listingId,amount,totalCost,parseFloat(totalCost),parseFloat(listing.costPerUnit))
       console.log("Total cost in wei:", totalCost.toString());
@@ -171,6 +182,7 @@ export const StateContextProvider = ({ children }) => {
         createdAt: new Date(listing.createdAt.toNumber() * 1000).toLocaleString() // Convert timestamp to readable date
       }));
 
+      console.log("yo",parsedListings);
       return parsedListings;
     } catch (error) {
       console.error("Error fetching energy listings:", error);
@@ -218,6 +230,7 @@ export const StateContextProvider = ({ children }) => {
     try {
       const listings = await contract.getEnergyListingsByOwner(address);
 
+
       // Parse and format the listings for frontend use
       const parsedListings = listings.map((listing, i) => ({
         id: i,
@@ -225,12 +238,13 @@ export const StateContextProvider = ({ children }) => {
         name: listing.name,
         description: listing.description,
         costPerUnit: ethers.utils.formatEther(listing.costPerUnit), // Convert wei to ETH
-        energyAmount: thers.utils.formatEther(listing.energyAmount),
+        energyAmount: ethers.utils.formatEther(listing.energyAmount),
         fuelType: listing.fuelType,
         image: listing.image,
         amountSold: ethers.utils.formatEther(listing.amountSold),
         createdAt: new Date(listing.createdAt.toNumber() * 1000).toLocaleString() // Convert timestamp to readable date
       }));
+
 
       return parsedListings;
     } catch (error) {
@@ -315,6 +329,7 @@ export const StateContextProvider = ({ children }) => {
         address,
         contract,
         connectWallet,           // Function to connect MetaMask
+        disconnectWallet,        // Function to disconnect MetaMask
         createEnergyListing,     // Function to create a new energy listing
         buyEnergy,               // Function to purchase energy
         getEnergyListings,       // Function to fetch all energy listings

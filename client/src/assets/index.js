@@ -12,6 +12,13 @@ import menu from './menu.svg';
 import money from './money.svg';
 import loader from './loader.svg';
 import thirdweb from './thirdweb.png';
+import geothermal from './geothermal.svg';
+import solar_energy from './solar_energy.svg';
+import water_energy from './water_energy.svg';
+import windmill from './windmill.svg';
+import biomass_energy from './biomass_energy.svg';
+import fossil_fuel from './fossil_fuel.svg';
+
 
 export {
   tagType,
@@ -28,4 +35,10 @@ export {
   money,
   loader,
   thirdweb,
+  geothermal,
+  solar_energy,
+  water_energy,
+  windmill,
+  biomass_energy,
+  fossil_fuel
 };

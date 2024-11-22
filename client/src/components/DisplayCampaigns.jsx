@@ -11,6 +11,8 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
     navigate(`/campaign-details/${campaign.name}`, { state: campaign });
   };
 
+
+
   return (
     <div>
       <h1 className="font-epilogue font-semibold text-[18px] text-white text-left">{title} ({campaigns.length})</h1>
@@ -32,18 +34,7 @@ const DisplayCampaigns = ({ title, isLoading, campaigns }) => {
               {...campaign} 
               handleClick={() => handleNavigate(campaign)} 
             />
-            {/* Display Purchase Timestamps */}
-            <div className="purchase-timestamps mt-2 text-gray-400 text-sm">
-              {campaign.purchaseTimestamps && campaign.purchaseTimestamps.length > 0 ? (
-                <ul>
-                  {campaign.purchaseTimestamps.map((timestamp, index) => (
-                    <li key={uuidv4()}>{`Purchase ${index + 1}: ${new Date(timestamp).toLocaleString()}`}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No purchases yet.</p>
-              )}
-            </div>
+            
           </div>
         ))}
       </div>

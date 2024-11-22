@@ -14,6 +14,7 @@ const Home = () => {
     try {
       const data = await getEnergyListings(); // Fetch all energy listings
       setListings(data);
+      //console.log("demmm",data);
     } catch (error) {
       console.error("Error fetching energy listings:", error);
     }
@@ -26,6 +27,8 @@ const Home = () => {
     }
   }, [address, contract]);
 
+
+  console.log(listings);
   return (
     <DisplayCampaigns 
       title="All Energy Listings" // Updated title

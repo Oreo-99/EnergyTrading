@@ -122,12 +122,12 @@ const CreateEnergyListing = () => {
             className="py-[15px] px-[15px] outline-none border-[1px] border-[#3a3a43] bg-transparent font-epilogue text-white text-[14px] placeholder:text-[#4b5264] rounded-[10px] sm:min-w-[300px]"
           >
             <option value="" disabled>Select fuel type</option>
-            <option value="solar">Solar</option>
-            <option value="wind">Wind</option>
-            <option value="hydro">Hydro</option>
-            <option value="biomass">Biomass</option>
-            <option value="geothermal">Geothermal</option>
-            <option value="fossil fuel">Fossil Fuel</option> {/* Added Fossil Fuel */}
+            <option value="Solar">Solar</option>
+            <option value="Wind">Wind</option>
+            <option value="Hydro">Hydro</option>
+            <option value="Biomass">Biomass</option>
+            <option value="Geothermal">Geothermal</option>
+            <option value="Fossil Fuel">Fossil Fuel</option> {/* Added Fossil Fuel */}
           </select>
         </div>
 

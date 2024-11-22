@@ -25,6 +25,8 @@ contract EnergyTrading {
         uint256 listingId;
         uint256 amount;
         uint256 timestamp;
+        string fuelType; // Type of energy used
+        uint256 totalCost; // Total cost of the purchase
     }
 
     mapping(uint256 => EnergyListing) public energyListings;
@@ -116,14 +118,23 @@ contract EnergyTrading {
             "Not enough energy available."
         );
 
-        uint256 totalCost = listing.costPerUnit * _amount /10**18; // Total cost in Wei
-
+        uint256 totalCost = (listing.costPerUnit * _amount) / 10 ** 18; // Total cost in Wei
 
         // Ensure the buyer has sent the exact Ether required
         require(msg.value == totalCost, "Incorrect Ether value sent.");
 
         //above message but returns with the msg.value and totalCost)
-        require(msg.value == totalCost, string(abi.encodePacked("Incorrect Ether value sent. You sent: ", msg.value, " Expected: ", totalCost)));
+        require(
+            msg.value == totalCost,
+            string(
+                abi.encodePacked(
+                    "Incorrect Ether value sent. You sent: ",
+                    msg.value,
+                    " Expected: ",
+                    totalCost
+                )
+            )
+        );
 
         // Update the listing to reflect the sold amount
         listing.amountSold += _amount;
@@ -137,11 +148,14 @@ contract EnergyTrading {
         purchaseHistory[_id].push(newPurchase);
 
         // Track the user's purchase
+        // Track the user's purchase with additional details
         userPurchases[msg.sender].push(
             PurchaseDetail({
                 listingId: _id,
                 amount: _amount,
-                timestamp: block.timestamp
+                timestamp: block.timestamp,
+                fuelType: listing.fuelType, // Include the type of energy
+                totalCost: totalCost // Include the calculated total cost
             })
         );
 
